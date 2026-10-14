@@ -6,6 +6,7 @@ import subprocess
 import time
 
 from Ciel.models import ExecutionRequest, ExecutionResult
+from Ciel.validator import ValidationError, validate_request
 
 
 def _truncate(raw: bytes, limit: int) -> tuple[str, bool]:
@@ -40,7 +41,14 @@ def _kill_group(process: subprocess.Popen) -> None:
 
 
 def execute(request: ExecutionRequest) -> ExecutionResult:
-    """Execute an approved program without invoking a shell."""
+    """Execute an approved program without invoking a shell.
+
+    Raises ValidationError before touching subprocess if the request
+    fails structural validation. Callers must handle this exception.
+    """
+
+    # Validate first. If this raises, no process is ever started.
+    validate_request(request)
 
     start_time = time.monotonic()
 
