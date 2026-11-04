@@ -1,6 +1,8 @@
-# Environment Variables
+# Environment Variables (real secrets — never commit these)
 .env
-.env.*
+.env.local
+.env.production
+.env.staging
 
 # Python bytecode
 __pycache__/
